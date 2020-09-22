@@ -2,7 +2,7 @@ const router = require("express").Router();
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const auth = require("../middleware/auth")
+const auth = require("../middleware/auth");
 router.post("/register", async (req, res) => {
   try {
     let { email, password, passwordCheck, displayName } = req.body;
@@ -101,4 +101,13 @@ router.post("/tokenIsValid", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+router.get("/", auth, async (req, res) => {
+  const user = await User.findById(req.user);
+  res.json({
+    displayName: user.displayName,
+    id: user._id,
+  });
+});
+
 module.exports = router;
